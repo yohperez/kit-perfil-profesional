@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bootcamp IA — Kit de Perfil Profesional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c1015;
+    --panel:#182029;
+    --panel-2:#1f2a35;
+    --panel-3:#131a21;
+    --border:#3a4a5a;
+    --border-soft:#2c3944;
+    --text:#f5f8fb;
+    --text-dim:#b7c5d3;
+    --text-faint:#8496a8;
+    --amber:#f0ac4a;
+    --teal:#5fe0d2;
+    --blue:#8fbcff;
+    --red:#f0797c;
+    --violet:#c3aeea;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 500px at 85% -10%, rgba(240,172,74,0.05), transparent 60%),
+      radial-gradient(900px 400px at -5% 10%, rgba(95,224,210,0.04), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  ::selection{ background:rgba(232,163,61,0.3); }
+  a{ color:var(--blue); }
+  .res-card, .callout, .board-card, .card, .cv-doc, .ai-card, .prompt-card, .tool-list li, .table-wrap, .stepper, .pitch-step, .pitch-preview{
+    box-shadow:0 1px 0 rgba(255,255,255,0.02) inset, 0 6px 16px rgba(0,0,0,0.28);
+  }
+
+  .shell{
+    display:grid;
+    grid-template-columns:262px 1fr;
+    max-width:1320px;
+    margin:0 auto;
+    min-height:100vh;
+  }
+  @media (max-width:880px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{ position:static; border-right:none; border-bottom:1px solid var(--border-soft); height:auto; }
+  }
+
+  .sidebar{
+    padding:28px 16px;
+    border-right:1px solid var(--border-soft);
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    padding:0 8px 20px 8px; margin-bottom:16px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .brand-mark{ width:30px;height:30px;flex:none; }
+  .brand-text{ font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; line-height:1.25; }
+  .brand-text span{ display:block; color:var(--text-faint); font-size:10.5px; font-weight:400; letter-spacing:.03em; text-transform:uppercase; margin-top:2px;}
+
+  nav.tabs{ display:flex; flex-direction:column; gap:3px; }
+  .tab-btn{
+    display:flex; align-items:flex-start; gap:10px;
+    width:100%; text-align:left; background:none;
+    border:1px solid transparent; border-radius:var(--radius);
+    color:var(--text-dim); font-family:'Inter',sans-serif; font-size:13px;
+    padding:10px 11px; cursor:pointer;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .tab-btn:hover{ background:var(--panel-2); color:var(--text); }
+  .tab-btn.active{ background:var(--panel-2); border-color:var(--border); color:var(--text); }
+  .tab-dot{ width:8px;height:8px;border-radius:50%; margin-top:4px; flex:none; background:var(--text-faint); }
+  .tab-btn.active .tab-dot{ background:var(--amber); box-shadow:0 0 8px rgba(232,163,61,.5); }
+  .tab-label{ font-weight:600; display:block; }
+  .tab-sub{ display:block; font-weight:400; color:var(--text-faint); font-size:11px; margin-top:1px; }
+
+  .sidebar-foot{
+    margin-top:20px; padding:13px 12px;
+    border:1px dashed var(--border); border-radius:var(--radius);
+    font-size:11px; color:var(--text-faint); line-height:1.5;
+  }
+  .sidebar-foot b{ color:var(--text-dim); }
+
+  main{ padding:34px 40px 60px 40px; min-width:0; }
+  @media (max-width:640px){ main{ padding:22px 18px 48px 18px; } }
+
+  header.top{ margin-bottom:8px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--amber);
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px;
+  }
+  header.top h1{ font-family:'Space Grotesk',sans-serif; font-size:25px; font-weight:700; margin:0 0 8px 0; letter-spacing:-0.01em; }
+  header.top p.lede{ color:var(--text-dim); font-size:13.5px; margin:0 0 24px 0; max-width:68ch; line-height:1.55; }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- overview board ---------- */
+  .board-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:760px){ .board-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .board-grid{ grid-template-columns:1fr;} }
+  .board-card{
+    background:var(--panel); border:1px solid var(--border-soft); border-radius:14px;
+    padding:20px; cursor:pointer; text-align:left;
+    transition:border-color .15s ease, transform .12s ease;
+    display:flex; flex-direction:column; gap:14px; min-height:132px;
+  }
+  .board-card:hover{ border-color:var(--amber); transform:translateY(-2px); }
+  .board-card .ic{ width:30px; height:30px; }
+  .board-card .num{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint); }
+  .board-card h3{ font-family:'Space Grotesk',sans-serif; font-size:15.5px; margin:0; }
+  .board-card p{ font-size:12px; color:var(--text-faint); margin:0; line-height:1.45; }
+
+  /* ---------- shared content pieces ---------- */
+  .sec{ margin-bottom:30px; }
+  .sec-title{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-faint); display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .sec-title::after{ content:''; flex:1; height:1px; background:var(--border-soft); }
+  .sec-title b{ color:var(--amber); font-weight:600; }
+
+  .resource-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:12px; }
+  .res-card{
+    background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:15px 17px; display:flex; flex-direction:column; gap:6px;
+  }
+  .res-card h4{ font-family:'Space Grotesk',sans-serif; font-size:13.5px; margin:0; }
+  .res-card p{ font-size:12px; color:var(--text-dim); line-height:1.5; margin:0; }
+  .res-card a.link{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--blue);
+    word-break:break-all; text-decoration:none; margin-top:2px;
+  }
+  .res-card a.link:hover{ text-decoration:underline; }
+  .res-card .via{ font-size:11px; color:var(--teal); }
+
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
+  .chip{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    background:var(--panel-2); border:1px solid var(--border); border-radius:6px;
+    padding:4px 9px; color:var(--text-dim);
+  }
+
+  .callout{
+    background:var(--panel-3); border:1px solid var(--border-soft); border-left:3px solid var(--amber);
+    border-radius:8px; padding:16px 18px; font-size:13px; color:var(--text-dim); line-height:1.6;
+  }
+  .callout b{ color:var(--text); }
+  .callout ul{ margin:10px 0 0 0; padding-left:18px; }
+  .callout li{ margin-bottom:4px; }
+
+  .tool-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .tool-list li{
+    background:var(--panel); border:1px solid var(--border-soft); border-radius:8px;
+    padding:12px 15px; font-size:12.5px; color:var(--text-dim); line-height:1.55;
+  }
+  .tool-list li b{ color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px; }
+  .tool-list a{ font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width:820px){ .two-col{ grid-template-columns:1fr; } }
+
+  .ai-card{ background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:16px 18px; margin-bottom:12px; }
+  .ai-card .ai-name{ font-family:'Space Grotesk',sans-serif; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+  .ai-card .ai-name .swatch{ width:9px; height:9px; border-radius:3px; }
+  .ai-card ul{ margin:6px 0 0 0; padding-left:18px; font-size:12.5px; color:var(--text-dim); line-height:1.6; }
+  .ai-card p.note{ font-size:12px; color:var(--text-faint); margin:8px 0 0 0; }
+
+  .prompt-card{
+    background:var(--panel-3); border:1px solid var(--border-soft); border-radius:var(--radius);
+    margin-bottom:12px; overflow:hidden;
+  }
+  .prompt-head{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:10px 14px; background:var(--panel-2); border-bottom:1px solid var(--border-soft);
+  }
+  .prompt-head span{ font-family:'Space Grotesk',sans-serif; font-size:13px; }
+  .prompt-body{ padding:13px 16px; font-size:12.5px; color:var(--text-dim); line-height:1.65; white-space:pre-wrap; font-family:'JetBrains Mono',monospace; }
+  .btn{
+    display:inline-flex; align-items:center; gap:7px; background:var(--panel-2);
+    border:1px solid var(--border); color:var(--text); font-family:'Inter',sans-serif;
+    font-weight:600; font-size:12px; padding:7px 12px; border-radius:7px; cursor:pointer;
+    transition:border-color .15s ease; white-space:nowrap;
+  }
+  .btn:hover{ border-color:var(--amber); }
+  .btn.primary{ background:var(--amber); border-color:var(--amber); color:#1a1206; }
+  .btn.sm{ padding:5px 10px; font-size:11px; }
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--panel-2); border:1px solid var(--teal); color:var(--text);
+    padding:10px 18px; border-radius:8px; font-size:13px; opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- Plantillas sub-nav ---------- */
+  .subnav{ display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+  .subtab-btn{
+    background:var(--panel); border:1px solid var(--border-soft); color:var(--text-dim);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px; padding:9px 14px;
+    border-radius:8px; cursor:pointer; transition:all .15s ease;
+  }
+  .subtab-btn:hover{ color:var(--text); border-color:var(--border); }
+  .subtab-btn.active{ background:var(--amber); border-color:var(--amber); color:#1a1206; }
+  .subpanel{ display:none; }
+  .subpanel.active{ display:block; animation:fade .2s ease; }
+
+  .stepper{
+    display:flex; align-items:center; gap:0; background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:var(--radius); padding:16px 18px; overflow-x:auto; margin-bottom:8px;
+  }
+  .step{ display:flex; flex-direction:column; align-items:center; gap:7px; flex:1; min-width:86px; position:relative; opacity:.4; transition:opacity .25s ease; }
+  .step.on{ opacity:1; }
+  .step-dot{ width:11px;height:11px;border-radius:50%; background:var(--text-faint); border:2px solid var(--panel); box-shadow:0 0 0 1px var(--border); transition:background .25s ease, box-shadow .25s ease; }
+  .step.on .step-dot{ background:var(--amber); box-shadow:0 0 0 1px var(--amber), 0 0 10px rgba(232,163,61,.5); }
+  .step-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-faint); text-align:center; white-space:nowrap; }
+  .step.on .step-label{ color:var(--text); }
+  .step:not(:last-child)::after{ content:''; position:absolute; top:5px; left:calc(50% + 14px); right:calc(-50% + 14px); height:1px; background:var(--border); }
+  .stepper-note{ margin:10px 0 24px 0; font-size:12px; color:var(--text-faint); }
+  .stepper-note b{ color:var(--amber); font-weight:600; }
+
+  .panel-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+  .panel-head h2{ font-family:'Space Grotesk',sans-serif; font-size:18px; margin:0 0 5px 0; }
+  .panel-head p{ color:var(--text-dim); font-size:13px; margin:0; max-width:56ch; line-height:1.5; }
+
+  .table-wrap{ border:1px solid var(--border-soft); border-radius:var(--radius); overflow-x:auto; background:var(--panel); }
+  table.tracker{ border-collapse:collapse; width:100%; min-width:920px; font-size:13px; }
+  table.tracker th{
+    text-align:left; font-family:'JetBrains Mono',monospace; font-weight:500; font-size:11px; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--text-faint); padding:12px 14px; border-bottom:1px solid var(--border-soft);
+    background:var(--panel-3); position:sticky; top:0;
+  }
+  table.tracker td{ padding:10px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top; color:var(--text); }
+  table.tracker tr:last-child td{ border-bottom:none; }
+  table.tracker td[contenteditable]:focus{ outline:1px solid var(--amber); border-radius:4px; background:var(--panel-2); }
+  select.status{ background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:5px 8px; font-size:12px; font-family:'Inter',sans-serif; }
+  select.status[data-v="Oferta"]{ color:var(--teal); border-color:var(--teal); }
+  select.status[data-v="Rechazado"]{ color:var(--red); border-color:var(--red); }
+  select.status[data-v="Entrevista"], select.status[data-v="Prueba Técnica"]{ color:var(--blue); border-color:var(--blue); }
+  .del-row{ background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:15px;line-height:1;padding:2px 6px;border-radius:5px; }
+  .del-row:hover{ color:var(--red); background:rgba(226,104,107,0.1); }
+
+  .split{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:900px){ .split{ grid-template-columns:1fr; } }
+  .card{ background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); overflow:hidden; }
+  .card-bar{ display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:var(--panel-3); border-bottom:1px solid var(--border-soft); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint); }
+  textarea#mdSource{ width:100%; height:520px; background:var(--panel); color:var(--text); border:none; resize:vertical; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; padding:16px; }
+  textarea#mdSource:focus{ outline:none; }
+  #mdPreview{ padding:20px 22px; height:520px; overflow-y:auto; font-size:13.5px; line-height:1.6; }
+  #mdPreview h1{ font-family:'Space Grotesk',sans-serif; font-size:21px; margin:0 0 6px 0; }
+  #mdPreview h3{ font-family:'Space Grotesk',sans-serif; font-size:15px; color:var(--amber); margin:20px 0 8px 0; }
+  #mdPreview hr{ border:none; border-top:1px solid var(--border-soft); margin:16px 0; }
+  #mdPreview code{ background:var(--panel-2); padding:2px 6px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); }
+  #mdPreview a{ color:var(--blue); }
+  #mdPreview img{ max-width:100%; border-radius:6px; margin-top:6px; }
+  #mdPreview ul{ padding-left:20px; }
+  #mdPreview p{ color:var(--text-dim); margin:6px 0; }
+  #mdPreview strong{ color:var(--text); }
+
+  .cv-doc{ background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:34px 38px; max-width:720px; }
+  .cv-name{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; outline:none; }
+  .cv-role{ color:var(--amber); font-family:'JetBrains Mono',monospace; font-size:12.5px; margin-top:4px; outline:none; }
+  .cv-meta{ color:var(--text-faint); font-size:12px; margin-top:8px; outline:none; }
+  .cv-sec{ margin-top:26px; }
+  .cv-sec-title{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-faint); display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .cv-sec-title::after{ content:''; flex:1; height:1px; background:var(--border-soft); }
+  .cv-sec [contenteditable]{ outline:none; }
+  .cv-sec p{ font-size:13px; color:var(--text-dim); line-height:1.6; margin:0; }
+  .cv-tags{ display:flex; flex-wrap:wrap; gap:7px; margin-top:6px; }
+  .cv-tag{ font-family:'JetBrains Mono',monospace; font-size:11px; background:var(--panel-2); border:1px solid var(--border); border-radius:5px; padding:3px 8px; color:var(--text-dim); }
+  .cv-item{ margin-bottom:14px; }
+  .cv-item-head{ display:flex; justify-content:space-between; gap:10px; font-size:13px; font-weight:600; }
+  .cv-item-head span{ font-weight:400; color:var(--text-faint); font-family:'JetBrains Mono',monospace; font-size:11.5px; }
+  .cv-item ul{ margin:6px 0 0 0; padding-left:18px; color:var(--text-dim); font-size:13px; line-height:1.6; }
+
+  .pitch-steps{ display:flex; flex-direction:column; gap:14px; }
+  .pitch-step{ background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:16px 18px; }
+  .pitch-step-label{ display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--amber); margin-bottom:8px; }
+  .pitch-step-label .n{ width:18px; height:18px; border-radius:50%; border:1px solid var(--amber); display:flex; align-items:center; justify-content:center; font-size:10px; }
+  .pitch-step textarea{ width:100%; background:var(--panel-2); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'Inter',sans-serif; font-size:13.5px; line-height:1.55; padding:10px 12px; resize:vertical; min-height:56px; }
+  .pitch-step textarea:focus{ outline:1px solid var(--amber); }
+  .pitch-preview{ margin-top:20px; background:var(--panel-3); border:1px dashed var(--border); border-radius:var(--radius); padding:20px 22px; font-size:14px; line-height:1.7; color:var(--text); }
+  .pitch-preview .ph-label{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+
+  footer.hint{ margin-top:36px; font-size:11.5px; color:var(--text-faint); border-top:1px solid var(--border-soft); padding-top:16px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none">
+        <circle cx="8" cy="24" r="3" fill="#e8a33d"/>
+        <circle cx="16" cy="16" r="3" fill="#4fd1c5"/>
+        <circle cx="24" cy="8" r="3" fill="#6ea8fe"/>
+        <path d="M8 24L16 16L24 8" stroke="#2a3542" stroke-width="1.6"/>
+      </svg>
+      <div class="brand-text">Bootcamp IA<span>Kit de perfil profesional</span></div>
+    </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="overview"><span class="tab-dot"></span><span><span class="tab-label">Resumen</span><span class="tab-sub">Las 6 categorías</span></span></button>
+      <button class="tab-btn" data-tab="cv"><span class="tab-dot"></span><span><span class="tab-label">Para CV</span><span class="tab-sub">Guía ATS + validación</span></span></button>
+      <button class="tab-btn" data-tab="github"><span class="tab-dot"></span><span><span class="tab-label">README, GitHub y Portfolio</span><span class="tab-sub">Recursos y generadores</span></span></button>
+      <button class="tab-btn" data-tab="perfil"><span class="tab-dot"></span><span><span class="tab-label">Perfil Profesional</span><span class="tab-sub">IA, prompts y webs</span></span></button>
+      <button class="tab-btn" data-tab="empleo"><span class="tab-dot"></span><span><span class="tab-label">Plataforma Empleo IT</span><span class="tab-sub">Dónde buscar</span></span></button>
+      <button class="tab-btn" data-tab="cert"><span class="tab-dot"></span><span><span class="tab-label">Certificación y Validaciones</span><span class="tab-sub">Cursos y credenciales</span></span></button>
+      <button class="tab-btn" data-tab="plantillas"><span class="tab-dot"></span><span><span class="tab-label">Plantillas</span><span class="tab-sub">4 herramientas editables</span></span></button>
+    </nav>
+    <div class="sidebar-foot"><b>Cómo usarlo:</b> navega por categoría, copia lo que necesites y pégalo en la página de Notion del equipo.</div>
+  </aside>
+
+  <main>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="panel active" id="panel-overview">
+      <header class="top">
+        <div class="eyebrow">Bootcamp IA · Búsqueda de empleo</div>
+        <h1>Kit de perfil profesional</h1>
+        <p class="lede">Todo lo recopilado por el grupo, organizado en las 6 categorías del tablero: currículum, portfolio y GitHub, perfil profesional, plataformas de empleo, certificaciones y plantillas listas para usar.</p>
+      </header>
+      <div class="board-grid">
+        <button class="board-card" data-goto="cv">
+          <div style="display:flex; justify-content:space-between;"><span class="num">01</span></div>
+          <h3>Para CV</h3>
+          <p>Guía ATS-friendly completa, errores que descartan tu CV y herramientas para comprobar tu puntuación.</p>
+        </button>
+        <button class="board-card" data-goto="github">
+          <div style="display:flex; justify-content:space-between;"><span class="num">02</span></div>
+          <h3>README, GitHub y Portfolio</h3>
+          <p>Generadores de README, plantillas de portfolio y tarjetas de presentación digital.</p>
+        </button>
+        <button class="board-card" data-goto="perfil">
+          <div style="display:flex; justify-content:space-between;"><span class="num">03</span></div>
+          <h3>Perfil Profesional</h3>
+          <p>Cómo usar ChatGPT, Gemini, Claude y Perplexity para construir tu marca, más prompts listos para copiar.</p>
+        </button>
+        <button class="board-card" data-goto="empleo">
+          <div style="display:flex; justify-content:space-between;"><span class="num">04</span></div>
+          <h3>Plataforma Empleo IT</h3>
+          <p>Plataformas generales, portales especializados en datos, headhunters y freelance.</p>
+        </button>
+        <button class="board-card" data-goto="cert">
+          <div style="display:flex; justify-content:space-between;"><span class="num">05</span></div>
+          <h3>Certificación y Validaciones</h3>
+          <p>Certificados gratuitos que compensan la falta de experiencia: Google, DeepLearning.AI, Hugging Face, Microsoft.</p>
+        </button>
+        <button class="board-card" data-goto="plantillas">
+          <div style="display:flex; justify-content:space-between;"><span class="num">06</span></div>
+          <h3>Plantillas</h3>
+          <p>Job tracker, README, CV ATS y elevator pitch — editables y listos para copiar a Notion.</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ 01 CV ============ -->
+    <section class="panel" id="panel-cv">
+      <header class="top">
+        <div class="eyebrow">01 · Para CV</div>
+        <h1>Guía de CV "ATS-friendly"</h1>
+        <p class="lede">Para perfiles de Datos, Desarrollo de Software e IA. Un ATS (Applicant Tracking System) filtra tu CV antes de que lo vea una persona — esto es lo que necesita para leerlo bien.</p>
+      </header>
+
+      <div class="sec">
+        <div class="sec-title"><b>1</b> Formato que el ATS pueda leer</div>
+        <div class="callout">
+          Word (.docx) o PDF "de texto" — nunca PDF escaneado o generado como imagen. Evita tablas, columnas múltiples, cuadros de texto y elementos gráficos para estructurar el contenido: muchos ATS los leen mal o directamente los ignoran.
+          <ul>
+            <li>Fuentes estándar: Arial, Calibri, Georgia, Helvetica.</li>
+            <li>Evita encabezados/pies de página con información clave — algunos parsers no los leen.</li>
+            <li>Nombre de archivo profesional: <b>Nombre_Apellido_CV.pdf</b>, no CV_final_v3.pdf.</li>
+            <li>Un solo idioma por versión del CV; si aplicas a puestos en dos idiomas, crea dos archivos separados.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><b>2</b> Palabras clave: lo que realmente filtra el ATS</div>
+        <div class="callout">
+          Extrae las keywords literales de la oferta y repítelas tal cual. Si la oferta dice "Kubernetes", pon "Kubernetes", no "orquestación de contenedores". Incluye sigla + nombre completo: "ML (Machine Learning)", "CI/CD (Integración y Despliegue Continuo)", "NLP (Procesamiento de Lenguaje Natural)". Añade una sección explícita de "Skills técnicos" en texto plano — es lo que el parser lee más fácilmente.
+          <div class="chip-row" style="margin-top:10px;">
+            <span class="chip">Python · SQL · JS/TS · Java · Go · R</span>
+            <span class="chip">pandas · scikit-learn · PyTorch · TensorFlow · FastAPI · React · Spring</span>
+            <span class="chip">ETL · pipelines · LLMs · embeddings · MLOps · Power BI · Tableau</span>
+            <span class="chip">Docker · Kubernetes · AWS/GCP/Azure · Git · CI/CD</span>
+            <span class="chip">Scrum · Agile · TDD</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="sec">
+          <div class="sec-title"><b>3</b> Estructura recomendada</div>
+          <div class="callout">
+            <ul style="margin-top:0;">
+              <li>Nombre + título profesional ("Data Analyst", "Backend Developer", "ML Engineer")</li>
+              <li>Contacto (LinkedIn, GitHub, portfolio — evita el email personal poco profesional)</li>
+              <li>Resumen breve (3-4 líneas) con las keywords principales del puesto</li>
+              <li>Experiencia profesional (logros cuantificados)</li>
+              <li>Proyectos destacados (muy valorado en tech: repos, dashboards, apps, modelos)</li>
+              <li>Skills técnicos en texto plano, agrupados por categoría</li>
+              <li>Formación y certificaciones</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-title"><b>4</b> Logros con números, no solo funciones</div>
+          <div class="callout">
+            Evita descripciones genéricas de tareas.
+            <ul style="margin-top:10px;">
+              <li style="color:var(--red);">✗ "Responsable de mantenimiento de bases de datos."</li>
+              <li style="color:var(--teal);">✓ "Optimicé consultas SQL que redujeron el tiempo de carga de reportes en un 40%, sobre una base de datos de +2M de registros."</li>
+              <li style="color:var(--red);">✗ "Desarrollo de modelos de machine learning."</li>
+              <li style="color:var(--teal);">✓ "Entrené y desplegué un modelo de clasificación (scikit-learn) con 92% de precisión, integrado en producción vía API FastAPI."</li>
+            </ul>
+            Fórmula: verbo de acción + qué hiciste + herramienta/tecnología + resultado medible.
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="sec">
+          <div class="sec-title"><b>5</b> Errores que "matan" el CV ante un ATS</div>
+          <div class="callout">
+            <ul style="margin-top:0;">
+              <li>Poner el nombre del puesto solo en el título del documento y no dentro del texto.</li>
+              <li>Usar acrónimos sin la versión completa (o viceversa).</li>
+              <li>Repetir el mismo verbo de acción en cada línea ("gestioné", "gestioné"...).</li>
+              <li>Meter certificaciones o cursos como imagen/logo en vez de texto.</li>
+              <li>CVs de más de 2 páginas para perfiles con &lt;10 años de experiencia.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-title"><b>7</b> Extra para perfiles de IA/Datos</div>
+          <div class="callout">
+            <ul style="margin-top:0;">
+              <li>Si trabajas con modelos o datasets, menciona tamaño y tipo ("dataset de 500K registros", "modelo con 10M de parámetros") — da contexto de escala.</li>
+              <li>Enlaza repositorios de GitHub o notebooks públicos cuando sea posible; muchos técnicos los revisan antes que el CV.</li>
+              <li>Si el puesto es de IA generativa/LLMs, incluye experiencia con APIs de modelos (OpenAI, Anthropic, Groq, Hugging Face) de forma explícita — es una keyword muy buscada.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title"><b>6</b> Herramientas de validación (score &amp; keywords)</div>
+        <div class="resource-grid">
+          <div class="res-card"><h4>ATS Killer</h4><p>Escáner de IA para verificar tu stack técnico frente a ofertas de empleo.</p><a class="link" href="https://cv.nan.builders/" target="_blank" rel="noopener">cv.nan.builders</a></div>
+          <div class="res-card"><h4>Jobscan</h4><p>Calcula el porcentaje exacto de coincidencia de tus palabras clave.</p><a class="link" href="https://www.jobscan.co" target="_blank" rel="noopener">jobscan.co</a></div>
+          <div class="res-card"><h4>Resume Worded</h4><p>Evalúa gratis tu estructura, formato e impacto de redacción.</p><a class="link" href="https://resumeworded.com" target="_blank" rel="noopener">resumeworded.com</a></div>
+          <div class="res-card"><h4>Teal</h4><p>Analiza vacantes y extrae automáticamente las palabras clave obligatorias.</p><a class="link" href="https://www.tealhq.com" target="_blank" rel="noopener">tealhq.com</a></div>
+          <div class="res-card"><h4>LinkedIn</h4><p>Revisar ofertas similares para detectar patrones de keywords recurrentes.</p><a class="link" href="https://www.linkedin.com" target="_blank" rel="noopener">linkedin.com</a></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Control de metadatos ocultos</div>
+        <div class="callout">
+          ⚠️ El peligro: el ATS lee las propiedades internas del PDF y detectará si usaste plantillas ajenas o nombres de autores antiguos.
+          <ul>
+            <li>Propiedades del archivo: ve a Archivo → Propiedades en tu editor antes de guardar.</li>
+            <li>Campos obligatorios: pon tu nombre completo en "Autor" y tu rol (ej. Data Scientist) en "Título".</li>
+            <li>Nombre de guardado: exporta siempre con la estructura Nombre_Apellido_CV.pdf.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Hacks de optimización y auditoría</div>
+        <div class="callout">
+          <ul style="margin-top:0;">
+            <li>Buscar el ATS de la empresa: en Google, "sistema ATS + [nombre de la empresa]" para saber qué software te va a filtrar.</li>
+            <li>La prueba del Bloc de Notas: copia todo el texto de tu CV y pégalo en un documento .txt plano.</li>
+            <li>Validación visual: si en el Bloc de Notas el texto se lee ordenado y continuo, el ATS lo procesará sin problemas.</li>
+            <li>Benchmarking: compara los requerimientos técnicos de tu CV contra las guías de estudio interactivas de <a href="https://roadmap.sh" target="_blank" rel="noopener">Roadmap.sh</a>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Plantilla relacionada</div>
+        <p style="font-size:13px; color:var(--text-dim);">La versión editable de este CV está en la pestaña <b style="color:var(--amber);">Plantillas → CV ATS</b>.</p>
+        <button class="btn" data-goto="plantillas" data-subgoto="cv">Ir a la plantilla de CV →</button>
+      </div>
+    </section>
+
+    <!-- ============ 02 GITHUB / PORTFOLIO ============ -->
+    <section class="panel" id="panel-github">
+      <header class="top">
+        <div class="eyebrow">02 · README, GitHub y Portfolio</div>
+        <h1>Perfil de GitHub y portfolio</h1>
+        <p class="lede">Recursos para montar tu README de perfil, alojar tu portfolio y crear una tarjeta de presentación digital.</p>
+      </header>
+
+      <div class="sec">
+        <div class="sec-title">Portfolio</div>
+        <div class="resource-grid">
+          <div class="res-card"><h4>Linktr.ee</h4><p>Creación de portfolio — un único enlace para reunir tus proyectos, redes y CV.</p><a class="link" href="https://linktr.ee" target="_blank" rel="noopener">linktr.ee</a></div>
+          <div class="res-card"><h4>Netlify</h4><p>Sitio para publicar tu portfolio de forma gratuita (recurso de hosting).</p><a class="link" href="https://www.netlify.com" target="_blank" rel="noopener">netlify.com</a></div>
+          <div class="res-card"><h4>WaveCNCT</h4><p>Tarjeta de presentación digital.</p><a class="link" href="https://wavecnct.com/es" target="_blank" rel="noopener">wavecnct.com/es</a></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">README profile</div>
+        <div class="resource-grid">
+          <div class="res-card"><h4>Readme.so</h4><p>Editor visual para construir el README de tu perfil de GitHub.</p><a class="link" href="https://readme.so" target="_blank" rel="noopener">readme.so</a></div>
+          <div class="res-card"><h4>GitHub Profile README Generator</h4><p>Generador guiado paso a paso del README de tu perfil.</p><a class="link" href="https://rahuldkjain.github.io/gh-profile-readme-generator/" target="_blank" rel="noopener">rahuldkjain.github.io/gh-profile-readme-generator</a></div>
+          <div class="res-card"><h4>Awesome README</h4><p>Colección de ejemplos reales de perfiles y proyectos en GitHub. Útil para inspirarse y mejorar la presentación de tus repositorios y tu perfil profesional.</p></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Plantilla relacionada</div>
+        <p style="font-size:13px; color:var(--text-dim);">Edita y previsualiza tu propio README en la pestaña <b style="color:var(--amber);">Plantillas → README GitHub</b>.</p>
+        <button class="btn" data-goto="plantillas" data-subgoto="readme">Ir al editor de README →</button>
+      </div>
+    </section>
+
+    <!-- ============ 03 PERFIL PROFESIONAL ============ -->
+    <section class="panel" id="panel-perfil">
+      <header class="top">
+        <div class="eyebrow">03 · Perfil Profesional</div>
+        <h1>Construye tu perfil con IA</h1>
+        <p class="lede">La IA debe ayudarte a pensar y redactar, pero el contenido final siempre debe ser verdadero y sonar como tú.</p>
+      </header>
+
+      <div class="sec">
+        <div class="sec-title">Definir tu sello personal</div>
+        <div class="callout">
+          Pensar en qué te hace diferente. No se necesitan 10 años de experiencia para destacar.
+          <ul>
+            <li>Identifica las fortalezas: ¿eres buenísimo/a programando, editando vídeos, organizando eventos o hablando en público?</li>
+            <li>Escribe un "pitch" de una frase: define qué haces, para quién y qué problema resuelves.</li>
+            <li>Ejemplo: "Ayudo a pequeños emprendedores a crear vídeos atractivos para TikTok que conectan con gente de mi edad."</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">1 · Inteligencias artificiales para trabajar el perfil</div>
+        <div class="ai-card">
+          <div class="ai-name"><span class="swatch" style="background:var(--teal);"></span>ChatGPT — herramienta principal</div>
+          <ul>
+            <li>Analizar tu experiencia y descubrir competencias transferibles.</li>
+            <li>Definir tu nuevo perfil profesional y redactar/adaptar el currículum.</li>
+            <li>Mejorar LinkedIn y transformar funciones en logros profesionales.</li>
+            <li>Analizar ofertas de empleo y preparar cartas de presentación.</li>
+            <li>Practicar entrevistas y explicar tus proyectos de forma comprensible.</li>
+            <li>Preparar respuestas sobre el cambio de sector y crear versiones del CV según el puesto.</li>
+          </ul>
+          <p class="note">OpenAI ofrece recursos específicos sobre el uso de ChatGPT para perfeccionar currículums, organizar la experiencia y preparar entrevistas.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name"><span class="swatch" style="background:var(--blue);"></span>Gemini — segunda opinión</div>
+          <ul>
+            <li>Revisar documentos y comparar distintas versiones de un texto.</li>
+            <li>Analizar información integrada con herramientas de Google.</li>
+            <li>Practicar respuestas e investigar puestos y competencias.</li>
+          </ul>
+          <p class="note">Google ofrece formación para utilizar Gemini y la IA como herramientas de productividad profesional.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name"><span class="swatch" style="background:var(--amber);"></span>Claude</div>
+          <ul>
+            <li>Revisar textos largos y analizar currículums, proyectos o documentación extensa.</li>
+            <li>Detectar repeticiones e incongruencias.</li>
+            <li>Ayudar a ordenar información profesional compleja.</li>
+            <li>Comparar un CV con una oferta.</li>
+          </ul>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name"><span class="swatch" style="background:var(--violet);"></span>Perplexity — investigar información actual</div>
+          <ul>
+            <li>Qué tecnologías están en auge (top) en el mercado actual, para saber en cuáles centrarte.</li>
+            <li>Qué empresas están contratando y qué funciones tiene cada puesto.</li>
+            <li>Qué certificaciones aparecen en las ofertas y diferencias entre Data Analyst, BI Analyst, Data Scientist y otros perfiles.</li>
+          </ul>
+          <p class="note">Se utiliza principalmente para buscar información, no para decidir cómo debe quedar tu perfil.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name"><span class="swatch" style="background:var(--red);"></span>DeepL y LanguageTool</div>
+          <ul>
+            <li>Currículum y LinkedIn en inglés, cartas de presentación.</li>
+            <li>Corrección ortográfica, gramatical y redacción profesional.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Prompts listos para copiar</div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span>1 · Perfil general</span><button class="btn sm copy-prompt" data-target="prompt1">Copiar</button></div>
+          <div class="prompt-body" id="prompt1">Eres un recruiter de Amazon, Google y Microsoft. Analiza mi perfil de LinkedIn completo. Dime:
+- qué eliminarías
+- qué añadirías
+- qué partes aburren
+- qué palabras cambiarías
+- qué logros faltan
+- cómo destacar más
+- qué skills debo potenciar
+Después reescribe cada apartado.</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span>2 · Elevator pitch (45 seg)</span><button class="btn sm copy-prompt" data-target="prompt2">Copiar</button></div>
+          <div class="prompt-body" id="prompt2">Quiero un elevator pitch de 45 segundos. Debe responder de forma natural a la pregunta: "Háblame de ti." No quiero un listado de trabajos. Quiero contar una historia. Debe explicar:
+- quién soy
+- por qué cambié de carrera
+- qué aporto
+- qué estoy buscando
+- qué me diferencia
+Haz tres versiones: formal - cercana - muy memorable.</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span>3 · Perfil profesional para CV</span><button class="btn sm copy-prompt" data-target="prompt3">Copiar</button></div>
+          <div class="prompt-body" id="prompt3">Escribe un perfil profesional de 5-6 líneas para un CV de Data Analyst. Mi objetivo es conseguir mi primer empleo en análisis de datos. No quiero que suene a junior inseguro. Quiero transmitir potencial, capacidad de aprendizaje y experiencia previa útil. Mi experiencia es: (pega CV)</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span>4 · "Sobre mí" de LinkedIn</span><button class="btn sm copy-prompt" data-target="prompt4">Copiar</button></div>
+          <div class="prompt-body" id="prompt4">Actúa como un recruiter senior especializado en perfiles tecnológicos. Analiza mi trayectoria profesional y escribe un apartado "Sobre mí" para LinkedIn que:
+- suene natural y humano
+- no parezca escrito por IA
+- transmita confianza
+- tenga personalidad
+- sea cercano pero profesional
+- incluya palabras clave ATS relacionadas con Data Analyst
+- destaque mis habilidades transferibles
+- termine con una llamada a conectar
+Mi información es: (pega aquí tu CV)</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span>5 · Para crear marca personal</span><button class="btn sm copy-prompt" data-target="prompt5">Copiar</button></div>
+          <div class="prompt-body" id="prompt5">Actúa como un experto en personal branding, LinkedIn, recruiting tecnológico y comunicación. Voy a darte mi CV, mi perfil de LinkedIn y varias ofertas de empleo. Tu trabajo será:
+1. Analizar mi trayectoria.
+2. Encontrar mi propuesta de valor.
+3. Detectar mis habilidades transferibles.
+4. Identificar las palabras clave ATS que faltan.
+5. Reescribir mi titular de LinkedIn.
+6. Crear un "Sobre mí" atractivo.
+7. Escribir un perfil profesional para mi CV.
+8. Redactar un elevator pitch de 30 y 60 segundos.
+9. Proponer publicaciones para LinkedIn que refuercen mi marca personal.
+10. Identificar debilidades y cómo compensarlas.
+Quiero un tono profesional, cercano y auténtico, evitando frases genéricas y exageradas.
+Si detectas incoherencias o áreas mejorables, indícalas y explica por qué.</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="sec">
+          <div class="sec-title">Webs de análisis</div>
+          <ul class="tool-list">
+            <li><b>Teal</b> — analiza LinkedIn, CV y ofertas de trabajo. Te dice qué palabras clave faltan, qué habilidades deberías destacar y qué está buscando el ATS. Especialmente útil si vas a buscar trabajo en Data Analytics. · <a href="https://www.tealhq.com" target="_blank" rel="noopener">tealhq.com</a></li>
+            <li><b>Resume Worded</b> — probablemente la mejor para LinkedIn. Analiza tu perfil y te da una puntuación sobre 100: titular, sobre mí, experiencia, skills, foto, banner, logros. Compara tu perfil con perfiles de personas contratadas en empresas tecnológicas.</li>
+            <li><b>Jobscan</b> — perfecta para adaptar tanto el CV como LinkedIn a una oferta concreta. Hace un "match" entre tu CV, tu LinkedIn y la oferta, y te dice el porcentaje de coincidencia. Muy utilizada en selección.</li>
+          </ul>
+        </div>
+        <div class="sec">
+          <div class="sec-title">Bases de datos de competencias</div>
+          <ul class="tool-list">
+            <li><b>ESCO</b> — clasificación oficial europea de ocupaciones, conocimientos, habilidades y competencias. Permite buscar profesiones relacionadas con datos, identificar competencias oficiales, encontrar distintas denominaciones para un mismo puesto y elegir palabras clave para el CV y LinkedIn. <a class="link" style="display:inline;" href="https://esco.ec.europa.eu/es" target="_blank" rel="noopener">esco.ec.europa.eu/es</a></li>
+            <li><b>O*NET Online</b> — base de datos profesional estadounidense muy completa. Permite consultar funciones de cada puesto, habilidades técnicas, competencias personales, herramientas y programas utilizados, nivel de formación habitual y tareas concretas. Incluye información sobre más de 900 ocupaciones. <a class="link" style="display:inline;" href="https://www.onetonline.org" target="_blank" rel="noopener">onetonline.org</a></li>
+            <li><b>Ofertas reales de empleo</b> — LinkedIn Jobs, InfoJobs, Tecnoempleo, Indeed, Glassdoor, Talent.com y páginas de empresas. No solo para aplicar, sino para crear tu propia base de datos de requisitos: qué herramientas se repiten, qué títulos utilizan, qué nivel de inglés piden y qué competencias personales aparecen.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <b>Feedback de Sara (profesora):</b> valora muy positivamente el formato de "botonera" para acceder fácilmente a los recursos, y recomienda incluir siempre los enlaces directos de ESCO y O*NET —herramientas muy útiles pero menos conocidas por el grupo— además de mantener el Notion limpio, sin información duplicada o desordenada.
+      </div>
+
+      <div class="sec" style="margin-top:24px;">
+        <div class="sec-title">Plantilla relacionada</div>
+        <p style="font-size:13px; color:var(--text-dim);">Rellena tu discurso de presentación en la pestaña <b style="color:var(--amber);">Plantillas → Elevator Pitch</b>.</p>
+        <button class="btn" data-goto="plantillas" data-subgoto="pitch">Ir al elevator pitch →</button>
+      </div>
+    </section>
+
+    <!-- ============ 04 PLATAFORMA EMPLEO IT ============ -->
+    <section class="panel" id="panel-empleo">
+      <header class="top">
+        <div class="eyebrow">04 · Plataforma Empleo IT</div>
+        <h1>Dónde buscar trabajo</h1>
+        <p class="lede">De una lista de nombres de webs a una estrategia: plataformas generales optimizadas, portales especializados en datos, intermediarios de reclutamiento y opciones internacionales.</p>
+      </header>
+
+      <div class="sec">
+        <div class="sec-title">De tecnología y datos</div>
+        <div class="resource-grid">
+          <div class="res-card">
+            <h4>Tecnoempleo</h4>
+            <p>Uno de los portales IT más importantes de España, especializado en Data Science, Analysis, Big Data, BI y bases de datos. Permite subir hasta 5 versiones de CV para roles distintos y está muy integrado con los ATS de grandes consultoras, lo que agiliza los procesos de selección. Su "calculadora de sueldo" ayuda a ubicar el rango salarial de cada perfil.</p>
+            <a class="link" href="https://www.tecnoempleo.com" target="_blank" rel="noopener">tecnoempleo.com</a>
+          </div>
+          <div class="res-card">
+            <h4>Empleando (Empleadata)</h4>
+            <p>Plataforma pública destinada a ingenieros, científicos de datos, analistas y desarrolladores BI. Funciona con reclutamiento inverso: no aplicas tú, sino que las empresas buscan tu perfil y te contactan directamente según tu stack (SQL, Python, Power BI, Tableau) y tus expectativas.</p>
+            <a class="link" href="https://www.empleadata.com" target="_blank" rel="noopener">empleadata.com</a>
+          </div>
+          <div class="res-card">
+            <h4>Dice.com</h4>
+            <p>Plataforma líder en Estados Unidos, ideal para trabajo remoto en empresas internacionales, salarios en dólares y contratos internacionales (revisa siempre la legalidad y los impuestos aplicables). Sus filtros son muy precisos: puedes buscar keywords técnicas muy concretas como <code style="color:var(--teal);">snowflake</code>, <code style="color:var(--teal);">apache</code> o <code style="color:var(--teal);">Tableau</code>.</p>
+            <a class="link" href="https://www.dice.com" target="_blank" rel="noopener">dice.com</a>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:12px;">
+          <b>Sobre Stack Overflow Jobs:</b> su sección de empleo cerró en 2022. Sus funciones de búsqueda han sido absorbidas en gran parte por LinkedIn y Dice.com (esta última, muy buena, pero principalmente en inglés). Aun así, se recomienda seguir consultando Stack Overflow para resolver dudas técnicas: sigue siendo un sitio de referencia para la comunidad de desarrolladores.
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Consultoras y headhunters (reclutamiento especializado)</div>
+        <ul class="tool-list">
+          <li><b>Michael Page / Page Personnel</b> — muy conocida en Data &amp; Analytics. Ofrece posiciones estables en grandes compañías (a menudo trabaja con las Big Four) y salarios competitivos.</li>
+          <li><b>Hays España</b> — expertos en reclutamiento IT. Su valor añadido es el acompañamiento profesional: te guían y te conectan directamente con empresas que necesitan perfiles tecnológicos.</li>
+        </ul>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Optimización avanzada de plataformas generales</div>
+        <div class="two-col">
+          <div class="ai-card">
+            <div class="ai-name"><span class="swatch" style="background:var(--blue);"></span>LinkedIn</div>
+            <ul>
+              <li>Configura el perfil para que sea visible solo para recruiters ("Abierto a oportunidades" en modo discreto).</li>
+              <li>Personaliza tu URL — quita los números aleatorios.</li>
+              <li>Prioriza palabras clave técnicas concretas (p. ej. "Docker") en lugar de términos genéricos.</li>
+              <li>Pide recomendaciones a compañeros de clase, jefes o colegas.</li>
+            </ul>
+          </div>
+          <div class="ai-card">
+            <div class="ai-name"><span class="swatch" style="background:var(--teal);"></span>Indeed + Glassdoor (integrados)</div>
+            <ul>
+              <li>Comparativa salarial: expectativas reales según puesto, empresa y ciudad.</li>
+              <li>Investigación de empresa: valoraciones de empleados (ambiente, liderazgo, conciliación) y preguntas frecuentes de procesos de selección previos.</li>
+            </ul>
+          </div>
+          <div class="ai-card">
+            <div class="ai-name"><span class="swatch" style="background:var(--amber);"></span>InfoJobs</div>
+            <ul>
+              <li>Seguimiento de candidaturas: monitoriza los estados (leído, en proceso, descartado).</li>
+              <li>Preguntas de filtrado: no respondas rápido y de forma automática — da respuestas elaboradas para destacar en el proceso.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:12px;">
+          <b>Regla de oro:</b> aplicar en las primeras 24–48 horas desde que se publica la oferta es crucial para tener éxito.
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Freelance y proyectos</div>
+        <div class="resource-grid">
+          <div class="res-card"><h4>Malt</h4><a class="link" href="https://www.malt.es" target="_blank" rel="noopener">malt.es</a></div>
+          <div class="res-card"><h4>Upwork</h4><a class="link" href="https://www.upwork.com" target="_blank" rel="noopener">upwork.com</a></div>
+          <div class="res-card"><h4>Toptal</h4><a class="link" href="https://www.toptal.com" target="_blank" rel="noopener">toptal.com</a></div>
+        </div>
+        <div class="callout" style="margin-top:10px;">
+          Útil para: obtener ingresos complementarios, flexibilidad horaria o trabajo remoto, autónomos y consultores que buscan nuevos clientes, y crear una marca profesional con un portfolio de proyectos reales.
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title">Plantilla relacionada</div>
+        <p style="font-size:13px; color:var(--text-dim);">Registra tus candidaturas de estas plataformas en la pestaña <b style="color:var(--amber);">Plantillas → Job Tracker</b>.</p>
+        <button class="btn" data-goto="plantillas" data-subgoto="tracker">Ir al job tracker →</button>
+      </div>
+    </section>
+
+    <!-- ============ 05 CERTIFICACIONES ============ -->
+    <section class="panel" id="panel-cert">
+      <header class="top">
+        <div class="eyebrow">05 · Certificación y Validaciones</div>
+        <h1>Certificados que compensan la falta de experiencia</h1>
+        <p class="lede">Para un perfil junior, este conjunto de certificaciones es la mejor herramienta para superar los primeros filtros automáticos y demostrar bases técnicas reales.</p>
+      </header>
+
+      <div class="resource-grid">
+        <div class="res-card">
+          <h4>Google Career Certificates</h4>
+          <p>Certificados profesionales de Google (Análisis de Datos, Python, SQL).</p>
+          <a class="link" href="https://grow.google/intl/es/google-career-certificates/" target="_blank" rel="noopener">grow.google/intl/es/google-career-certificates</a>
+          <span class="via">Tenemos acceso a través de INCO</span>
+        </div>
+        <div class="res-card">
+          <h4>DeepLearning.AI</h4>
+          <p>Cursos cortos y especializados en IA Generativa (RAG, agentes, LLMs).</p>
+          <a class="link" href="https://www.coursera.org/partners/deeplearning-ai" target="_blank" rel="noopener">coursera.org/partners/deeplearning-ai</a>
+          <a class="link" href="https://www.deeplearning.ai/" target="_blank" rel="noopener">deeplearning.ai</a>
+        </div>
+        <div class="res-card">
+          <h4>Hugging Face</h4>
+          <p>Guía oficial para crear y alojar tu portfolio interactivo (Spaces).</p>
+          <a class="link" href="https://huggingface.co/docs/hub/spaces" target="_blank" rel="noopener">huggingface.co/docs/hub/spaces</a>
+        </div>
+        <div class="res-card">
+          <h4>HackerRank</h4>
+          <p>Exámenes gratuitos de Python, SQL y resolución de problemas — añade las insignias directamente a tu LinkedIn.</p>
+          <a class="link" href="https://www.hackerrank.com/skills-verification" target="_blank" rel="noopener">hackerrank.com/skills-verification</a>
+        </div>
+        <div class="res-card">
+          <h4>Scrum Alliance</h4>
+          <p>Certificaciones de Scrum.</p>
+          <a class="link" href="https://www.scrumalliance.org/get-certified" target="_blank" rel="noopener">scrumalliance.org/get-certified</a>
+        </div>
+        <div class="res-card">
+          <h4>Microsoft Azure</h4>
+          <p>Competencia en la nube líder en grandes empresas. Baja a la sección "Ruta de aprendizaje" para hacer los laboratorios interactivos gratis.</p>
+          <a class="link" href="https://learn.microsoft.com/es-es/credentials/certifications/azure-ai-fundamentals/" target="_blank" rel="noopener">learn.microsoft.com/.../azure-ai-fundamentals</a>
+          <a class="link" href="https://learn.microsoft.com/es-es/credentials/" target="_blank" rel="noopener">learn.microsoft.com/es-es/credentials</a>
+        </div>
+      </div>
+
+      <div class="sec" style="margin-top:26px;">
+        <div class="sec-title">Resumen</div>
+        <div class="callout">
+          Mientras que las credenciales de Google &amp; INCO y las validaciones de HackerRank/LeetCode demuestran la solidez de tus bases técnicas (SQL, Python y lógica de código) para superar los primeros filtros automáticos de los reclutadores, la especialización en DeepLearning.AI y Microsoft Azure certifica que estás actualizado en las arquitecturas de IA y nubes corporativas que el mercado demanda con urgencia. Por último, tu portfolio interactivo en Hugging Face consolida tu candidatura, ofreciendo a las empresas pruebas reales, visuales y funcionales de que sabes transformar la teoría en soluciones de IA tangibles listas para producción.
+          <ul>
+            <li><b>Google &amp; INCO</b>: certificados profesionales (Análisis de Datos, Python, SQL).</li>
+            <li><b>DeepLearning.AI</b>: especializaciones en IA moderna (RAG, Agentes, LLMs).</li>
+            <li><b>Hugging Face</b>: despliegue de apps y portfolio interactivo (Spaces).</li>
+            <li><b>HackerRank / LeetCode</b>: validaciones de código rápidas y tests técnicos.</li>
+            <li><b>Microsoft Azure</b>: certificaciones oficiales (AI-900 / AI-102) para dominar Azure OpenAI y desplegar modelos comerciales en producción.</li>
+          </ul>
+          <p style="margin-top:10px; margin-bottom:0;">Más info → <a href="https://www.muycomputerpro.com/2025/10/29/las-certificaciones-it-mas-demandadas-en-2026" target="_blank" rel="noopener">muycomputerpro.com — certificaciones IT más demandadas en 2026</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 PLANTILLAS ============ -->
+    <section class="panel" id="panel-plantillas">
+      <header class="top">
+        <div class="eyebrow">06 · Plantillas</div>
+        <h1>Plantillas listas para usar</h1>
+        <p class="lede">Cuatro recursos editables. Escribe directamente sobre cada plantilla, pulsa «Copiar» y pega el resultado en Notion.</p>
+      </header>
+
+      <div class="subnav">
+        <button class="subtab-btn active" data-subtab="tracker">01 · Job Tracker</button>
+        <button class="subtab-btn" data-subtab="readme">02 · Perfil GitHub</button>
+        <button class="subtab-btn" data-subtab="cv">03 · CV ATS-friendly</button>
+        <button class="subtab-btn" data-subtab="pitch">04 · Elevator Pitch</button>
+      </div>
+
+      <div class="stepper" id="stepper">
+        <div class="step" data-stage="0"><div class="step-dot"></div><div class="step-label">Por aplicar</div></div>
+        <div class="step" data-stage="1"><div class="step-dot"></div><div class="step-label">Aplicado</div></div>
+        <div class="step" data-stage="2"><div class="step-dot"></div><div class="step-label">Prueba técnica</div></div>
+        <div class="step" data-stage="3"><div class="step-dot"></div><div class="step-label">Entrevista</div></div>
+        <div class="step" data-stage="4"><div class="step-dot"></div><div class="step-label">Oferta</div></div>
+      </div>
+      <div class="stepper-note" id="stepperNote"></div>
+
+      <!-- ---- sub: JOB TRACKER ---- -->
+      <div class="subpanel active" id="sub-tracker">
+        <div class="panel-head">
+          <div><h2>Seguimiento de candidaturas</h2><p>Una fila por oferta. Cambia el estado a medida que avances y añade notas de cada prueba o entrevista.</p></div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn ghost" id="addRow">+ Añadir fila</button>
+            <button class="btn primary" id="copyTracker">Copiar tabla</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="tracker" id="trackerTable">
+            <thead>
+              <tr><th style="width:26px;"></th><th>Puesto</th><th>Empresa</th><th>Estado</th><th>Fecha</th><th>Tecnologías</th><th>Contacto</th><th>Enlace</th><th>Notas</th></tr>
+            </thead>
+            <tbody id="trackerBody">
+              <tr>
+                <td><button class="del-row" title="Eliminar fila">×</button></td>
+                <td contenteditable="true">Junior Data Scientist</td>
+                <td contenteditable="true">DataScope Solutions</td>
+                <td><select class="status" data-v="Aplicado"><option>Por aplicar</option><option selected>Aplicado</option><option>Prueba Técnica</option><option>Entrevista</option><option>Oferta</option><option>Rechazado</option></select></td>
+                <td contenteditable="true">17/07/2026</td>
+                <td contenteditable="true">Python, SQL, scikit-learn</td>
+                <td contenteditable="true">Ana G. — LinkedIn</td>
+                <td contenteditable="true">linkedin.com/jobs/...</td>
+                <td contenteditable="true">Pendiente de prueba técnica</td>
+              </tr>
+              <tr>
+                <td><button class="del-row" title="Eliminar fila">×</button></td>
+                <td contenteditable="true">Data Analyst</td>
+                <td contenteditable="true">IberMeteo Solutions</td>
+                <td><select class="status" data-v="Por aplicar"><option selected>Por aplicar</option><option>Aplicado</option><option>Prueba Técnica</option><option>Entrevista</option><option>Oferta</option><option>Rechazado</option></select></td>
+                <td contenteditable="true">—</td>
+                <td contenteditable="true">SQL, Power BI, Tableau</td>
+                <td contenteditable="true">—</td>
+                <td contenteditable="true">infojobs.net/...</td>
+                <td contenteditable="true">Preparar portfolio antes de aplicar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ---- sub: README ---- -->
+      <div class="subpanel" id="sub-readme">
+        <div class="panel-head">
+          <div><h2>Perfil de GitHub (README.md)</h2><p>Edita el markdown a la izquierda; la vista previa se actualiza a la derecha. Pégalo en el repositorio <code style="color:var(--teal)">tu-usuario/tu-usuario</code>.</p></div>
+          <button class="btn primary" id="copyReadme">Copiar markdown</button>
+        </div>
+        <div class="split">
+          <div class="card"><div class="card-bar"><span>README.md</span><span>editable</span></div><textarea id="mdSource" spellcheck="false"></textarea></div>
+          <div class="card"><div class="card-bar"><span>Vista previa</span><span>GitHub</span></div><div id="mdPreview"></div></div>
+        </div>
+      </div>
+
+      <!-- ---- sub: CV ---- -->
+      <div class="subpanel" id="sub-cv">
+        <div class="panel-head">
+          <div><h2>Currículum ATS-friendly</h2><p>Estructura pensada para pasar los filtros automáticos. Escribe directamente sobre cada campo.</p></div>
+          <button class="btn primary" id="copyCv">Copiar CV</button>
+        </div>
+        <div class="cv-doc" id="cvDoc">
+          <div class="cv-name" contenteditable="true">Tu Nombre Apellidos</div>
+          <div class="cv-role" contenteditable="true">DATA SCIENTIST / DATA ANALYST JUNIOR</div>
+          <div class="cv-meta" contenteditable="true">Ciudad, País · Teléfono · email@ejemplo.com · linkedin.com/in/tu-perfil · github.com/tu-usuario</div>
+          <div class="cv-sec">
+            <div class="cv-sec-title">Perfil profesional</div>
+            <p contenteditable="true">Científico/a de datos junior con base metodológica sólida. Experiencia práctica en limpieza, transformación de datos y modelado predictivo. Acostumbrado/a a trabajar con rigor para aportar soluciones basadas en datos reales.</p>
+          </div>
+          <div class="cv-sec">
+            <div class="cv-sec-title">Competencias técnicas</div>
+            <div class="cv-tags" contenteditable="true">
+              <span class="cv-tag">Python (Pandas, NumPy, scikit-learn)</span>
+              <span class="cv-tag">SQL</span>
+              <span class="cv-tag">Power BI / Tableau</span>
+              <span class="cv-tag">Clustering (K-means, PCA)</span>
+              <span class="cv-tag">Git / GitHub</span>
+            </div>
+          </div>
+          <div class="cv-sec">
+            <div class="cv-sec-title">Proyectos seleccionados</div>
+            <div class="cv-item">
+              <div class="cv-item-head" contenteditable="true">Nombre del proyecto <span>Rol / Creador</span></div>
+              <ul contenteditable="true">
+                <li>Desarrollé un pipeline de limpieza y transformación para un dataset de [tema].</li>
+                <li>Implementé K-means para segmentar [público objetivo], logrando [impacto].</li>
+                <li>Stack: Python, Pandas, Matplotlib, GitHub.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cv-sec">
+            <div class="cv-sec-title">Experiencia laboral</div>
+            <div class="cv-item">
+              <div class="cv-item-head" contenteditable="true">Puesto · Empresa <span>Fecha inicio – fin</span></div>
+              <ul contenteditable="true">
+                <li>Automatización de un reporte que ahorró X horas de trabajo semanal.</li>
+                <li>Colaboración con equipos multidisciplinares en [contexto].</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cv-sec">
+            <div class="cv-sec-title">Formación académica</div>
+            <div class="cv-item">
+              <ul contenteditable="true">
+                <li>Bootcamp en Inteligencia Artificial — SomosF5 / AI4Inclusion, 2026</li>
+                <li>Grado o formación previa — Institución, Año</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- sub: PITCH ---- -->
+      <div class="subpanel" id="sub-pitch">
+        <div class="panel-head">
+          <div><h2>Elevator pitch — véndete en 1 minuto</h2><p>Rellena los cuatro pasos; abajo verás el discurso completo listo para practicar o enviar por LinkedIn.</p></div>
+          <button class="btn primary" id="copyPitch">Copiar pitch</button>
+        </div>
+        <div class="pitch-steps">
+          <div class="pitch-step"><div class="pitch-step-label"><span class="n">1</span>Quién eres y tu rol</div><textarea id="p1">Hola, soy [tu nombre], especialista en Ciencia de Datos con un background en [tu formación o fuerte anterior].</textarea></div>
+          <div class="pitch-step"><div class="pitch-step-label"><span class="n">2</span>Qué problema resuelves</div><textarea id="p2">Me apasiona transformar datos brutos en decisiones de negocio, desde la limpieza de datos hasta algoritmos de Machine Learning como clustering o modelos predictivos.</textarea></div>
+          <div class="pitch-step"><div class="pitch-step-label"><span class="n">3</span>Tu mayor logro</div><textarea id="p3">Recientemente desarrollé [proyecto], donde logré [resultado concreto], facilitando la toma de decisiones estratégicas.</textarea></div>
+          <div class="pitch-step"><div class="pitch-step-label"><span class="n">4</span>Qué buscas</div><textarea id="p4">Actualmente busco incorporarme a un equipo donde pueda aportar mi capacidad analítica y seguir creciendo en el sector tecnológico. ¿Con quién podría hablar en tu equipo para explorar sinergias?</textarea></div>
+        </div>
+        <div class="pitch-preview"><div class="ph-label">Discurso completo</div><div id="pitchOutput"></div></div>
+      </div>
+
+    </section>
+
+    <footer class="hint">Basado en el trabajo de equipo del Bootcamp IA · Kit de Perfil Profesional — Datos &amp; IA</footer>
+  </main>
+</div>
+
+<div class="toast" id="toast">Copiado ✓</div>
+
+<script>
+  // ---------- top-level tabs ----------
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = {
+    overview: document.getElementById('panel-overview'),
+    cv: document.getElementById('panel-cv'),
+    github: document.getElementById('panel-github'),
+    perfil: document.getElementById('panel-perfil'),
+    empleo: document.getElementById('panel-empleo'),
+    cert: document.getElementById('panel-cert'),
+    plantillas: document.getElementById('panel-plantillas'),
+  };
+  function setActive(name){
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    Object.entries(panels).forEach(([k,el]) => el.classList.toggle('active', k === name));
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+  tabs.forEach(t => t.addEventListener('click', () => setActive(t.dataset.tab)));
+
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => {
+      setActive(el.dataset.goto);
+      if(el.dataset.subgoto) setSubActive(el.dataset.subgoto);
+    });
+  });
+
+  // ---------- Plantillas sub-tabs ----------
+  const subtabs = document.querySelectorAll('.subtab-btn');
+  const subpanels = {
+    tracker: document.getElementById('sub-tracker'),
+    readme: document.getElementById('sub-readme'),
+    cv: document.getElementById('sub-cv'),
+    pitch: document.getElementById('sub-pitch'),
+  };
+  const stageMap = { tracker:[0,1,2,3,4], readme:[0], cv:[0], pitch:[0] };
+  const stageNotes = {
+    tracker: 'Esta plantilla acompaña <b>todo el proceso</b>: desde que encuentras la oferta hasta que llega la respuesta.',
+    readme: 'Esta plantilla te ayuda en la fase de <b>preparación</b>, antes de aplicar.',
+    cv: 'Esta plantilla te ayuda en la fase de <b>preparación</b>, antes de aplicar.',
+    pitch: 'Esta plantilla te ayuda en la fase de <b>preparación</b>, antes de aplicar.',
+  };
+  function setSubActive(name){
+    subtabs.forEach(t => t.classList.toggle('active', t.dataset.subtab === name));
+    Object.entries(subpanels).forEach(([k,el]) => el.classList.toggle('active', k === name));
+    document.querySelectorAll('.step').forEach(step => {
+      const s = parseInt(step.dataset.stage,10);
+      step.classList.toggle('on', stageMap[name].includes(s));
+    });
+    document.getElementById('stepperNote').innerHTML = stageNotes[name];
+  }
+  subtabs.forEach(t => t.addEventListener('click', () => setSubActive(t.dataset.subtab)));
+  setSubActive('tracker');
+
+  // ---------- toast ----------
+  function toast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg || 'Copiado ✓';
+    el.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+  async function copyText(str, label){
+    try{ await navigator.clipboard.writeText(str); toast(label || 'Copiado ✓'); }
+    catch(e){ toast('No se pudo copiar — selecciona y copia manualmente'); }
+  }
+
+  // ---------- prompt copy buttons ----------
+  document.querySelectorAll('.copy-prompt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.target);
+      copyText(el.textContent, 'Prompt copiado');
+    });
+  });
+
+  // ---------- job tracker ----------
+  document.querySelectorAll('select.status').forEach(sel => {
+    sel.addEventListener('change', () => sel.setAttribute('data-v', sel.value));
+  });
+  document.getElementById('trackerBody').addEventListener('click', (e) => {
+    if(e.target.classList.contains('del-row')){
+      const row = e.target.closest('tr');
+      if(document.querySelectorAll('#trackerBody tr').length > 1) row.remove();
+    }
+  });
+  document.getElementById('addRow').addEventListener('click', () => {
+    const body = document.getElementById('trackerBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><button class="del-row" title="Eliminar fila">×</button></td>
+      <td contenteditable="true">Puesto</td>
+      <td contenteditable="true">Empresa</td>
+      <td><select class="status" data-v="Por aplicar"><option selected>Por aplicar</option><option>Aplicado</option><option>Prueba Técnica</option><option>Entrevista</option><option>Oferta</option><option>Rechazado</option></select></td>
+      <td contenteditable="true">DD/MM/AAAA</td>
+      <td contenteditable="true">—</td>
+      <td contenteditable="true">—</td>
+      <td contenteditable="true">—</td>
+      <td contenteditable="true">—</td>`;
+    body.appendChild(row);
+    row.querySelector('select').addEventListener('change', function(){ this.setAttribute('data-v', this.value); });
+  });
+  document.getElementById('copyTracker').addEventListener('click', () => {
+    const headers = ['Puesto','Empresa','Estado','Fecha','Tecnologías','Contacto','Enlace','Notas'];
+    let lines = [headers.join('\t')];
+    document.querySelectorAll('#trackerBody tr').forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const vals = [
+        cells[1].innerText.trim(), cells[2].innerText.trim(), cells[3].querySelector('select').value,
+        cells[4].innerText.trim(), cells[5].innerText.trim(), cells[6].innerText.trim(),
+        cells[7].innerText.trim(), cells[8].innerText.trim(),
+      ];
+      lines.push(vals.join('\t'));
+    });
+    copyText(lines.join('\n'), 'Tabla copiada — pégala en una tabla de Notion');
+  });
+
+  // ---------- README markdown ----------
+  const defaultMd = `# ¡Hola! Soy [Tu Nombre] 👋
+### [Tu Rol: Data Analyst / Data Scientist / AI Developer]
+
+Apasionado/a de extraer valor de los datos y diseñar soluciones basadas en Machine Learning. Formación en [tu background] y especializado/a en IA.
+
+---
+
+## 🛠️ Tecnologías y herramientas
+
+- **Lenguajes:** Python (Pandas, NumPy, scikit-learn), SQL, R
+- **Visualización:** Tableau, Power BI, Matplotlib, Seaborn
+- **IA & ML:** Modelos predictivos, Clustering (K-means), NLP, Git
+- **Entornos:** Jupyter Notebooks, VS Code, Google Colab
+
+---
+
+## 🚀 Proyectos destacados
+
+### 📂 [Nombre de tu proyecto]
+- **Descripción:** breve explicación de 2 líneas del problema que resuelve.
+- **Tech stack:** \`Python\` \`scikit-learn\` \`Tableau\`
+- **Resultado clave:** segmentación de clientes con K-means, mejora del 15% en precisión.
+- **[Ver proyecto](link-al-repositorio)**
+
+---
+
+## 📊 Estadísticas de GitHub
+![Estadísticas](https://github-readme-stats.vercel.app/api?username=TU-USUARIO&show_icons=true&theme=radial)
+
+---
+
+## 📫 Contacto
+- **LinkedIn:** [tu perfil](tu-link-linkedin)
+- **Email:** tu.correo@email.com
+- **Portfolio:** [tu web / Notion](tu-link-portfolio)
+`;
+  const mdSource = document.getElementById('mdSource');
+  const mdPreview = document.getElementById('mdPreview');
+  mdSource.value = defaultMd;
+
+  function renderMd(src){
+    let esc = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    esc = esc.replace(/^### (.*)$/gm,'<h3>$1</h3>');
+    esc = esc.replace(/^# (.*)$/gm,'<h1>$1</h1>');
+    esc = esc.replace(/^---$/gm,'<hr>');
+    esc = esc.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img alt="$1" src="$2">');
+    esc = esc.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    esc = esc.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    esc = esc.replace(/`([^`]+)`/g,'<code>$1</code>');
+    esc = esc.split('\n').map(line => {
+      if(/^\s*-\s+/.test(line)) return '<li>' + line.replace(/^\s*-\s+/,'') + '</li>';
+      return line;
+    }).join('\n');
+    esc = esc.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => '<ul>' + m.replace(/\n/g,'') + '</ul>');
+    esc = esc.split('\n').map(line => {
+      const t = line.trim();
+      if(t === '' ) return '';
+      if(/^<(h1|h3|hr|ul|li|img)/.test(t)) return line;
+      return '<p>' + line + '</p>';
+    }).join('\n');
+    return esc;
+  }
+  function updatePreview(){ mdPreview.innerHTML = renderMd(mdSource.value); }
+  mdSource.addEventListener('input', updatePreview);
+  updatePreview();
+  document.getElementById('copyReadme').addEventListener('click', () => {
+    copyText(mdSource.value, 'Markdown copiado — pégalo en tu README.md');
+  });
+
+  // ---------- CV copy ----------
+  document.getElementById('copyCv').addEventListener('click', () => {
+    copyText(document.getElementById('cvDoc').innerText, 'CV copiado como texto plano');
+  });
+
+  // ---------- pitch ----------
+  const p1 = document.getElementById('p1'), p2 = document.getElementById('p2'),
+        p3 = document.getElementById('p3'), p4 = document.getElementById('p4');
+  const pitchOutput = document.getElementById('pitchOutput');
+  function renderPitch(){
+    pitchOutput.innerHTML = [p1.value, p2.value, p3.value, p4.value]
+      .filter(t => t.trim() !== '')
+      .map(t => '<p style="margin:0 0 12px 0;">' + t.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</p>')
+      .join('');
+  }
+  [p1,p2,p3,p4].forEach(t => t.addEventListener('input', renderPitch));
+  renderPitch();
+  document.getElementById('copyPitch').addEventListener('click', () => {
+    copyText([p1.value,p2.value,p3.value,p4.value].join('\n\n'), 'Pitch copiado');
+  });
+</script>
+
+</body>
+</html>
